@@ -95,31 +95,92 @@ public class ListaLigada implements EstruturaDeDados{
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 100; i++) {
-            System.out.println(i);
-            if (i == 50){
-                break;
-            }
-        }
-        System.out.println("fim");
+        ListaLigada lista = new ListaLigada();
+
+        lista.insert(5);
+        lista.insert(10);
+        lista.insert(7);
+        lista.insert(8);
+        lista.insert(9);
+
+        System.out.println(lista.search(5));
+        System.out.println(lista.search(7));
+        System.out.println(lista.search(11));
+        System.out.println(lista.search(20));
+        System.out.println(lista.delete(10));
+        System.out.println(lista.search(10));
+        System.out.println(lista.delete(9));
+        System.out.println(lista.search(9));
+        System.out.println(lista.delete(1));
+        System.out.println(lista.delete(5));
+        System.out.println(lista.search(5));
+
     }
 
     @Override
     public boolean insert(int chave) {
-        // TODO Auto-generated method stub
-        return false;
+        if (this.inicio == null) {
+            inicio = new No(chave);
+
+            return true;
+        } else {
+            No no = new No(chave);
+            no.setProximo(inicio);
+
+            inicio = no;
+
+            return true;
+        }
     }
 
     @Override
     public boolean delete(int chave) {
-        // TODO Auto-generated method stub
-        return false;
+        if (this.inicio != null) {
+            if (search(chave)) {
+                if (inicio.getValor() == chave) {
+                    inicio = inicio.getProximo();
+                } else{
+                    deleteNode(inicio, chave);
+                }
+            } else {
+                return false;
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void deleteNode(No no, int chave) {
+        No proximo = no.getProximo();
+        if (proximo == null){
+            return;
+        }
+        if (proximo.getValor() == chave){
+            no.setProximo(proximo.getProximo());
+        } else{
+            deleteNode(proximo, chave);
+        }
     }
 
     @Override
     public boolean search(int chave) {
-        // TODO Auto-generated method stub
-        return false;
+        if (this.inicio == null) {
+            return false;
+        } else {
+            return searchNode(this.inicio, chave);
+        }
+    }
+
+    public boolean searchNode(No no, int chave) {
+        if (no.getValor() == chave) {
+            return true;
+        } else if (no.getProximo() == null) {
+            return false;
+        } else {
+            return searchNode(no.getProximo(), chave);
+        }
     }
 
     @Override

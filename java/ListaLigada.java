@@ -17,6 +17,11 @@ public class ListaLigada implements EstruturaDeDados{
         System.out.println(lista.minimum());
         System.out.println(lista.maximum());
 
+        System.out.println(lista.sucessor(10));
+        System.out.println(lista.sucessor(8));
+        System.out.println(lista.prodessor(9));
+        System.out.println(lista.prodessor(10));
+
         System.out.println(lista.delete(10));
         System.out.println(lista.search(10));
         System.out.println(lista.delete(9));
@@ -28,15 +33,19 @@ public class ListaLigada implements EstruturaDeDados{
     public boolean insert(int chave) {
         if (this.inicio == null) {
             inicio = new No(chave);
-
             return true;
         } else {
-            No no = new No(chave);
-            no.setProximo(inicio);
+            return insertLast(this.inicio, chave);
+        }
+    }
 
-            inicio = no;
-
+    public boolean insertLast(No node, int chave) {
+        if (node.getProximo() == null) {
+            No newNode = new No(chave);
+            node.setProximo(newNode);
             return true;
+        } else {
+            return insertLast(node.getProximo(), chave);
         }
     }
 
@@ -52,22 +61,19 @@ public class ListaLigada implements EstruturaDeDados{
             } else {
                 return false;
             }
-
             return true;
         } else {
             return false;
         }
     }
 
-    public void deleteNode(No no, int chave) {
-        No proximo = no.getProximo();
-        if (proximo == null){
+    public void deleteNode(No node, int chave) {
+        if (node.getProximo() == null){
             return;
-        }
-        if (proximo.getValor() == chave){
-            no.setProximo(proximo.getProximo());
+        } else if (node.getProximo().getValor() == chave){
+            node.setProximo(node.getProximo().getProximo());
         } else{
-            deleteNode(proximo, chave);
+            deleteNode(node.getProximo(), chave);
         }
     }
 
@@ -80,13 +86,13 @@ public class ListaLigada implements EstruturaDeDados{
         }
     }
 
-    public boolean searchNode(No no, int chave) {
-        if (no.getValor() == chave) {
+    public boolean searchNode(No node, int chave) {
+        if (node.getValor() == chave) {
             return true;
-        } else if (no.getProximo() == null) {
+        } else if (node.getProximo() == null) {
             return false;
         } else {
-            return searchNode(no.getProximo(), chave);
+            return searchNode(node.getProximo(), chave);
         }
     }
 
@@ -100,12 +106,12 @@ public class ListaLigada implements EstruturaDeDados{
             if (inicio.getProximo() == null) {
                 return minimo;
             } else {
-                return comparaMinimo(this.inicio, minimo);
+                return searchMinimum(this.inicio, minimo);
             }
         }
     }
 
-    public int comparaMinimo(No node, int minimo) {
+    public int searchMinimum(No node, int minimo) {
         int menor = minimo;
 
         if (node.getProximo() == null) {
@@ -116,7 +122,7 @@ public class ListaLigada implements EstruturaDeDados{
             menor = node.getProximo().getValor();
         } 
 
-        return comparaMinimo(node.getProximo(), menor);
+        return searchMinimum(node.getProximo(), menor);
     }
 
     @Override
@@ -129,12 +135,12 @@ public class ListaLigada implements EstruturaDeDados{
             if (inicio.getProximo() == null) {
                 return maximo;
             } else {
-                return comparaMaximo(this.inicio, maximo);
+                return searchMaximum(this.inicio, maximo);
             }
         }
     }
 
-    public int comparaMaximo(No node, int maximo) {
+    public int searchMaximum(No node, int maximo) {
         int maior = maximo;
 
         if (node.getProximo() == null) {
@@ -145,18 +151,44 @@ public class ListaLigada implements EstruturaDeDados{
             maior = node.getProximo().getValor();
         } 
 
-        return comparaMaximo(node.getProximo(), maior);
+        return searchMaximum(node.getProximo(), maior);
     }
 
     @Override
     public int sucessor(int chave) {
-        // TODO Auto-generated method stub
-        return 0;
+        if (search(chave)) {
+            return searchSucessor(this.inicio, chave);
+        } else {
+            return -1;
+        }
+    }
+
+    public int searchSucessor(No node, int chave) {
+        if (node.getProximo() == null) {
+            return -1;
+        } else if (node.getValor() == chave) {
+            return node.getProximo().getValor();
+        } else {
+            return searchSucessor(node.getProximo(), chave);
+        }
     }
 
     @Override
     public int prodessor(int chave) {
-        // TODO Auto-generated method stub
-        return 0;
+        if (search(chave)) {
+            return searchProdessor(this.inicio, chave);
+        } else {
+            return -1;
+        }
+    }
+
+    public int searchProdessor(No node, int chave) {
+        if (node.getProximo() == null) {
+            return -1;
+        } else if (node.getProximo().getValor() == chave) {
+            return node.getValor();
+        } else {
+            return searchProdessor(node.getProximo(), chave);
+        }
     }
 }
